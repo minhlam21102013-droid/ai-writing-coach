@@ -1,748 +1,98 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Writing Coach - Trường THCS Giồng Ông Tố</title>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --primary: #1e40af;
-            --primary-light: #eff6ff;
-            --primary-hover: #1d4ed8;
-            --success: #16a34a;
-            --success-light: #f0fdf4;
-            --warning: #d97706;
-            --warning-light: #fffbeb;
-            --danger: #dc2626;
-            --danger-light: #fef2f2;
-            --purple: #7c3aed;
-            --purple-light: #f5f3ff;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-600: #4b5563;
-            --gray-800: #1f2937;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: #f8fafc;
-            color: var(--gray-800);
-            line-height: 1.6;
-            padding-bottom: 60px;
-        }
-
-        header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            padding: 2rem 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header-title h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-title p {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-
-        .badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        /* Cycle Status Bar */
-        .cycle-bar {
-            display: flex;
-            justify-content: space-between;
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-            border: 1px solid var(--gray-200);
-        }
-
-        .cycle-step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--gray-600);
-        }
-
-        .cycle-step.active {
-            color: var(--primary);
-        }
-
-        .cycle-step .step-num {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background-color: var(--gray-200);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        .cycle-step.active .step-num {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        /* Card Styles */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--gray-200);
-            margin-bottom: 2rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 1rem;
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
-            font-size: 1rem;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.2s, transform 0.1s;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            background-color: var(--gray-300);
-            cursor: not-allowed;
-        }
-
-        .btn-success {
-            background-color: var(--success);
-        }
-
-        .btn-success:hover {
-            background-color: #15803d;
-        }
-
-        /* Grid Layout Phase 2 */
-        .phase-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .phase-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Error Cards */
-        .error-card {
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 5px solid var(--gray-300);
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border-top: 1px solid var(--gray-200);
-            border-right: 1px solid var(--gray-200);
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        /* Taxonomy Colors */
-        .tag-G {
-            border-left-color: var(--warning);
-            background-color: var(--warning-light);
-        }
-
-        .tag-V {
-            border-left-color: var(--primary);
-            background-color: var(--primary-light);
-        }
-
-        .tag-WF {
-            border-left-color: var(--purple);
-            background-color: var(--purple-light);
-        }
-
-        .tag-SS {
-            border-left-color: #0891b2;
-            background-color: #ecfeff;
-        }
-
-        .tag-SP {
-            border-left-color: var(--danger);
-            background-color: var(--danger-light);
-        }
-
-        .error-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .badge-G {
-            background-color: var(--warning);
-        }
-
-        .badge-V {
-            background-color: var(--primary);
-        }
-
-        .badge-WF {
-            background-color: var(--purple);
-        }
-
-        .badge-SS {
-            background-color: #0891b2;
-        }
-
-        .badge-SP {
-            background-color: var(--danger);
-        }
-
-        .error-target {
-            font-weight: 700;
-            color: var(--danger);
-            text-decoration: line-through;
-            margin-right: 5px;
-        }
-
-        .hint-item {
-            margin-top: 6px;
-            font-size: 0.9rem;
-        }
-
-        .hint-item strong {
-            color: var(--gray-800);
-        }
-
-        /* Loading Spinner */
-        .loading-container {
-            display: none;
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        .spinner {
-            border: 4px solid var(--gray-200);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border-left-color: var(--primary);
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem auto;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Check Results */
-        .result-card {
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: white;
-            border: 1px solid var(--gray-200);
-        }
-
-        .result-card.status-correct {
-            border-left: 5px solid var(--success);
-            background-color: var(--success-light);
-        }
-
-        .result-card.status-incorrect {
-            border-left: 5px solid var(--danger);
-            background-color: var(--danger-light);
-        }
-
-        .status-icon {
-            font-size: 1.2rem;
-            margin-right: 8px;
-        }
-
-        .learning-box {
-            background-color: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tặng Cô Hằng Kính Yêu 💐</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+:root{--pink:#e85b91;--rose:#b82d63;--cream:#fff8f5}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#fff;background:radial-gradient(ellipse at 50% 42%,#75445c 0%,#3a2037 50%,#160e20 100%)}
+#sky{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.topline{position:fixed;top:16px;left:0;width:100%;text-align:center;font-size:12px;font-weight:500;letter-spacing:3px;color:#ffd4df;z-index:2}
+.scene{position:relative;z-index:1;height:100vh;display:grid;place-items:center;padding:22px}
+.page{width:min(720px,94vw);text-align:center}
+.eyebrow{letter-spacing:4px;font-size:12px;font-weight:600;color:#ffd7e2;margin:0 0 13px}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(38px,7vw,76px);font-weight:700;line-height:1.05;margin:0;color:#fff4f5;text-shadow:0 0 22px #ff8fae80}
+.subtitle{font-size:clamp(15px,2.3vw,19px);line-height:1.8;color:#ffe5eb;max-width:580px;margin:18px auto 25px;font-weight:400}
+.button{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border:1px solid #ffd0dc;color:white;border-radius:30px;padding:13px 26px;background:linear-gradient(90deg,#b82d63,#e86b98);box-shadow:0 0 25px #ed6e9b55;cursor:pointer;font-size:13px;letter-spacing:.8px;transition:.25s}
+.button:hover{transform:translateY(-2px);box-shadow:0 0 34px #ff8eb6a0}
+.flower-wrap{height:150px;display:grid;place-items:center;margin-bottom:4px}
+.flower{position:relative;width:105px;height:130px;animation:sway 4s ease-in-out infinite;transform-origin:bottom center;filter:drop-shadow(0 0 13px #ff83aa55)}
+.stem{position:absolute;left:51px;bottom:0;width:4px;height:76px;background:linear-gradient(#7bc78c,#34734f);border-radius:8px}
+.leaf{position:absolute;left:51px;bottom:25px;width:37px;height:17px;background:#63ad76;border-radius:100% 0 100% 0;transform:rotate(-15deg)}
+.leaf.l2{left:20px;bottom:43px;transform:scaleX(-1) rotate(-15deg)}
+.petal{position:absolute;left:30px;bottom:59px;width:45px;height:55px;border-radius:55% 55% 42% 42%;background:linear-gradient(120deg,#ffd3df,#e54d80 75%,#a91e52)}
+.p2{left:14px;width:40px;height:45px;transform:rotate(-26deg);background:linear-gradient(120deg,#ffe0e7,#f36c98)}
+.p3{left:52px;width:40px;height:45px;transform:rotate(26deg);background:linear-gradient(240deg,#ffdce5,#d82d6c)}
+.p4{left:31px;bottom:66px;width:43px;height:45px;background:linear-gradient(#ffe7ec,#ff9db9)}
+.card{display:none;width:min(620px,93vw);max-height:84vh;overflow:auto;margin:auto;text-align:left;background:linear-gradient(145deg,#fffdfb,#fff0f3);color:#71364b;border-radius:14px;padding:clamp(23px,5vw,42px);box-shadow:0 0 55px #ff91b833,0 20px 60px #0005;position:relative;animation:appear .8s both}
+.card:before{content:"";position:absolute;inset:10px;border:1px solid #f1b7c8;border-radius:8px;pointer-events:none}
+.card h2{font-family:'Playfair Display',Georgia,serif;text-align:center;font-size:clamp(24px,4vw,34px);font-style:italic;font-weight:700;color:#b52d60;margin:0 0 22px}
+.card p{font-size:clamp(15px,2vw,17px);line-height:1.85;margin:12px 0}
+.sign{text-align:right;font-style:italic;font-family:'Playfair Display',Georgia,serif;color:#b52d60;font-size:1.05em;margin-top:22px!important}
+.center{text-align:center}
+.finale{display:none;animation:appear 1s both}
+.heart{font-size:96px;color:#ff9ab6;line-height:1;filter:drop-shadow(0 0 18px #ff5c91);animation:beat 1.2s infinite}
+.finale h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,6vw,58px);font-weight:700;margin:16px 0;color:#fff0f4;text-shadow:0 0 20px #ff759e}
+.finale p{font-size:clamp(16px,2.3vw,20px);line-height:1.85;color:#ffe0e8}
+.hidden{display:none!important}
+.note{position:fixed;bottom:13px;left:0;right:0;text-align:center;color:#f4c6d4;opacity:.7;font-size:11px;font-weight:500;letter-spacing:2px}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+@keyframes appear{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.12)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
+@media(max-height:650px){.flower-wrap{height:95px}.flower{transform:scale(.75)}.subtitle{margin:12px auto}.card{padding:22px}.card p{line-height:1.6}}
+</style>
 </head>
-
 <body>
-
-    <header>
-        <div class="header-container">
-            <div class="header-title">
-                <h1><i class="fa-solid fa-graduation-cap"></i> AI Writing Coach</h1>
-                <p>Hỗ trợ tự học & tự sửa lỗi viết tiếng Anh THCS (Chương trình Global Success)</p>
-            </div>
-            <div class="badge">
-                <i class="fa-solid fa-school"></i> Trường THCS Giồng Ông Tố
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-
-        <!-- Cycle Status Bar -->
-        <div class="cycle-bar">
-            <div class="cycle-step active" id="step-1"><span class="step-num">1</span> Phát hiện lỗi (Detect)</div>
-            <div class="cycle-step" id="step-2"><span class="step-num">2</span> Giải thích (Explain)</div>
-            <div class="cycle-step" id="step-3"><span class="step-num">3</span> Tự sửa (Correction)</div>
-            <div class="cycle-step" id="step-4"><span class="step-num">4</span> Học tập (Learning)</div>
-        </div>
-
-        <!-- GIAI ĐOẠN 1: NHẬP BÀI VÀ PHÂN TÍCH -->
-        <div class="card" id="phase1-card">
-            <div class="card-title">
-                <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i> Nhập bài viết tiếng Anh của bạn
-            </div>
-            <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
-                Dán hoặc gõ đoạn văn tiếng Anh của bạn vào ô dưới đây. Trợ lý AI sẽ giúp bạn tìm ra các điểm cần hoàn
-                thiện mà không đưa ngay đáp án đúng.
-            </p>
-            <textarea id="input-writing"
-                placeholder="Ví dụ: Yesterday I go to school and I see a very beautiful picture. She is more taller than me..."></textarea>
-
-            <button class="btn" id="btn-analyze" onclick="analyzeWriting()">
-                <i class="fa-solid fa-magnifying-glass-chart"></i> Phân Tích & Phát Hiện Lỗi
-            </button>
-        </div>
-
-        <!-- LOADING SPINNER -->
-        <div class="loading-container" id="loading-spinner">
-            <div class="spinner"></div>
-            <p id="loading-text" style="font-weight: 600; color: var(--gray-600);">Trợ lý AI đang rà soát bài viết của
-                bạn...</p>
-        </div>
-
-        <!-- GIAI ĐOẠN 2: TỰ SỬA BÀI -->
-        <div class="phase-grid hidden" id="phase2-container">
-
-            <!-- Cột trái: Thẻ gợi ý lỗi -->
-            <div class="card">
-                <div class="card-title">
-                    <i class="fa-solid fa-lightbulb" style="color: var(--warning);"></i> Gợi ý hướng dẫn sửa lỗi
-                </div>
-                <div id="error-cards-list"></div>
-            </div>
-
-            <!-- Cột phải: Ô tự chỉnh sửa -->
-            <div class="card">
-                <div class="card-title">
-                    <i class="fa-solid fa-user-pen" style="color: var(--success);"></i> Tự sửa bài viết của bạn
-                </div>
-                <p style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
-                    Dựa vào các gợi ý bên trái, hãy đọc kỹ bài gốc và chỉnh sửa lại bài viết của bạn bên dưới:
-                </p>
-                <textarea id="revision-writing" placeholder="Viết lại bài sửa hoàn chỉnh của bạn tại đây..."></textarea>
-
-                <button class="btn btn-success" id="btn-check" onclick="checkRevision()">
-                    <i class="fa-solid fa-circle-check"></i> Kiểm Tra Bài Sửa
-                </button>
-            </div>
-        </div>
-
-        <!-- GIAI ĐOẠN CUỐI: KẾT QUẢ VÀ BÀI HỌC -->
-        <div class="card hidden" id="phase3-container">
-            <div class="card-title">
-                <i class="fa-solid fa-square-poll-vertical" style="color: var(--purple);"></i> Kết quả đối chiếu & Đánh giá
-            </div>
-
-            <div id="feedback-summary-box" style="margin-bottom: 1.5rem; font-weight: 500;"></div>
-            <div id="check-results-list"></div>
-
-            <div class="learning-box" id="learning-profile-box">
-                <h4 style="color: var(--primary); margin-bottom: 0.5rem;">
-                    <i class="fa-solid fa-book-bookmark"></i> Định hướng ôn luyện thêm (Global Success)
-                </h4>
-                <p id="learning-recommendation-text" style="font-size: 0.95rem;"></p>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // Lưu trữ biến toàn cục
-        let originalText = "";
-        let currentErrors = [];
-
-        const taxonomyMap = {
-            "G": "Ngữ pháp (Grammar)",
-            "V": "Từ vựng (Vocabulary)",
-            "WF": "Dạng từ (Word Form)",
-            "SS": "Cấu trúc câu (Sentence Structure)",
-            "SP": "Chính tả / Dấu câu (Spelling)"
-        };
-
-        const SYSTEM_INSTRUCTION_ANALYZE = `
-Bạn là lõi công nghệ API cho hệ thống "AI Writing Coach" hỗ trợ học sinh THCS Việt Nam (lớp 6-9) tự học tiếng Anh theo chương trình Global Success.
-Nhiệm vụ: Phân tích bài viết ban đầu, phát hiện lỗi và đưa ra gợi ý giúp học sinh tự suy nghĩ.
-NGUYÊN TẮC QUAN TRỌNG: KHÔNG ĐƯỢC CUNG CẤP TRỰC TIẾP ĐÁP ÁN ĐÚNG trong lượt này.
-
-Phân loại lỗi theo 5 nhóm:
-G (Grammar), V (Vocabulary), WF (Word Forms), SS (Sentence Structure), SP (Spelling/Punctuation).
-
-Trả về JSON nghiêm ngặt có cấu trúc như sau:
-{
-  "action": "ANALYZE_WRITING",
-  "errors_found": [
-    {
-      "error_id": "E01",
-      "wrong_word": "từ/cụm từ sai",
-      "error_type": "G|V|WF|SS|SP",
-      "hints": {
-        "l1_identification": "Vị trí đoạn cần kiểm tra...",
-        "l2_explanation": "Giải thích nguyên nhân sai bằng tiếng Việt đơn giản...",
-        "l3_guided_hint": "Gợi ý mở hoặc câu hỏi định hướng để học sinh TỰ NGHĨ ra đáp án đúng..."
-      }
-    }
-  ]
-}
-`;
-
-        const SYSTEM_INSTRUCTION_CHECK = `
-Bạn là lõi công nghệ API cho hệ thống "AI Writing Coach".
-Nhiệm vụ: Đối chiếu bài viết mới do học sinh tự sửa với bài gốc và danh sách lỗi ban đầu.
-Ở lượt này, bạn hãy nhận xét nỗ lực của học sinh và CUNG CẤP MODEL ANSWER (Đáp án mẫu) vì học sinh đã qua lượt tự sửa.
-
-Trả về JSON nghiêm ngặt có cấu trúc như sau:
-{
-  "action": "CHECK_REVISION",
-  "is_completely_correct": true/false,
-  "feedback_summary": "Lời khen ngợi/nhận xét tổng quát bằng tiếng Việt...",
-  "checked_errors": [
-    {
-      "error_id": "E01",
-      "wrong_word": "từ sai cũ",
-      "status": "correct|incorrect|partially_correct",
-      "student_attempt": "từ học sinh đã sửa",
-      "feedback_check": "Nhận xét cụ thể về cách sửa của học sinh...",
-      "model_answer": "Đáp án chuẩn xác nhất kèm giải thích chi tiết..."
-    }
-  ],
-  "learning_profile_recommendation": {
-    "weakness_detected": "Điểm ngữ pháp/từ vựng học sinh còn yếu...",
-    "suggested_topic": "Chủ đề trong SGK Global Success học sinh nên ôn luyện lại..."
-  }
-}
-`;
-
-        // ================================================================
-        // GỌI VỀ BACKEND SERVERLESS PROXY /api/analyze ĐỂ BẢO MẬT KEY 100%
-        // ================================================================
-        async function callGeminiAPI(systemInstruction, userPrompt) {
-            const response = await fetch('/api/analyze', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    systemInstruction: systemInstruction,
-                    userPrompt: userPrompt
-                })
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || "Lỗi khi kết nối đến máy chủ AI.");
-            }
-
-            return await response.json();
-        }
-
-        async function analyzeWriting() {
-            const inputEl = document.getElementById("input-writing");
-            originalText = inputEl.value.trim();
-
-            if (!originalText) {
-                alert("Vui lòng nhập bài viết tiếng Anh trước khi bấm phân tích!");
-                return;
-            }
-
-            toggleLoading(true, "Trợ lý AI đang rà soát bài viết của bạn...");
-            document.getElementById("btn-analyze").disabled = true;
-
-            try {
-                const userPrompt = `Bài viết của học sinh:\n"${originalText}"`;
-                const result = await callGeminiAPI(SYSTEM_INSTRUCTION_ANALYZE, userPrompt);
-
-                currentErrors = result.errors_found || [];
-
-                updateCycleBar(2);
-                renderErrorCards(currentErrors);
-
-                document.getElementById("revision-writing").value = originalText;
-                document.getElementById("phase2-container").classList.remove("hidden");
-                document.getElementById("phase2-container").scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                console.error(error);
-                alert("Đã xảy ra lỗi khi phân tích: " + error.message);
-            } finally {
-                toggleLoading(false);
-                document.getElementById("btn-analyze").disabled = false;
-            }
-        }
-
-        function renderErrorCards(errors) {
-            const container = document.getElementById("error-cards-list");
-            container.innerHTML = "";
-
-            if (errors.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: var(--success); padding: 1rem;">
-                        <i class="fa-solid fa-circle-check" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-                        <p><strong>Tuyệt vời!</strong> Không tìm thấy lỗi ngữ pháp hoặc chính tả rõ ràng nào trong bài viết.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            errors.forEach((err, idx) => {
-                const card = document.createElement("div");
-                card.className = `error-card tag-${err.error_type}`;
-
-                card.innerHTML = `
-                    <div>
-                        <span class="error-badge badge-${err.error_type}">${taxonomyMap[err.error_type] || err.error_type}</span>
-                    </div>
-                    <div>
-                        Lỗi ${idx + 1}: Từ bị sai <span class="error-target">${escapeHtml(err.wrong_word)}</span>
-                    </div>
-                    <div class="hint-item">
-                        <strong><i class="fa-solid fa-magnifying-glass"></i> Nhận diện (L1):</strong> ${escapeHtml(err.hints.l1_identification)}
-                    </div>
-                    <div class="hint-item">
-                        <strong><i class="fa-solid fa-book"></i> Lý do sai (L2):</strong> ${escapeHtml(err.hints.l2_explanation)}
-                    </div>
-                    <div class="hint-item" style="color: var(--primary); font-weight: 500;">
-                        <strong><i class="fa-solid fa-compass"></i> Gợi ý tự sửa (L3):</strong> ${escapeHtml(err.hints.l3_guided_hint)}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        async function checkRevision() {
-            const revisionText = document.getElementById("revision-writing").value.trim();
-
-            if (!revisionText) {
-                alert("Vui lòng nhập bài viết đã chỉnh sửa của bạn!");
-                return;
-            }
-
-            toggleLoading(true, "AI đang chấm điểm bài viết đã sửa của bạn...");
-            document.getElementById("btn-check").disabled = true;
-
-            try {
-                const userPrompt = `
-Bài viết gốc ban đầu: "${originalText}"
-Danh sách lỗi đã phát hiện: ${JSON.stringify(currentErrors)}
-Bài viết mới học sinh đã tự sửa: "${revisionText}"
-`;
-                const result = await callGeminiAPI(SYSTEM_INSTRUCTION_CHECK, userPrompt);
-
-                updateCycleBar(4);
-                renderCheckResults(result);
-
-                document.getElementById("phase3-container").classList.remove("hidden");
-                document.getElementById("phase3-container").scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                console.error(error);
-                alert("Đã xảy ra lỗi khi đối chiếu bài sửa: " + error.message);
-            } finally {
-                toggleLoading(false);
-                document.getElementById("btn-check").disabled = false;
-            }
-        }
-
-        function renderCheckResults(result) {
-            const summaryBox = document.getElementById("feedback-summary-box");
-            const resultsList = document.getElementById("check-results-list");
-            const recText = document.getElementById("learning-recommendation-text");
-
-            if (result.is_completely_correct) {
-                summaryBox.className = "result-card status-correct";
-                summaryBox.innerHTML = `<i class="fa-solid fa-trophy status-icon" style="color: var(--success);"></i> <strong>Xuất sắc!</strong> ${escapeHtml(result.feedback_summary)}`;
-            } else {
-                summaryBox.className = "result-card status-incorrect";
-                summaryBox.innerHTML = `<i class="fa-solid fa-circle-exclamation status-icon" style="color: var(--danger);"></i> <strong>Cố gắng thêm chút nữa!</strong> ${escapeHtml(result.feedback_summary)}`;
-            }
-
-            resultsList.innerHTML = "";
-            (result.checked_errors || []).forEach((item, idx) => {
-                const card = document.createElement("div");
-                const isCorrect = item.status === "correct";
-                card.className = `result-card ${isCorrect ? 'status-correct' : 'status-incorrect'}`;
-
-                card.innerHTML = `
-                    <div style="font-weight: 700; margin-bottom: 6px;">
-                        ${isCorrect ?
-                        '<i class="fa-solid fa-circle-check" style="color: var(--success);"></i> Lỗi ' + (idx + 1) + ': Sửa Đúng' :
-                        '<i class="fa-solid fa-circle-xmark" style="color: var(--danger);"></i> Lỗi ' + (idx + 1) + ': Chưa Chính Xác'}
-                    </div>
-                    <div style="font-size: 0.9rem; margin-bottom: 4px;">
-                        • Từ sai ban đầu: <span style="text-decoration: line-through;">${escapeHtml(item.wrong_word)}</span>
-                    </div>
-                    <div style="font-size: 0.9rem; margin-bottom: 4px;">
-                        • Phương án bạn gõ: <strong>${escapeHtml(item.student_attempt || "(Bỏ trống)")}</strong>
-                    </div>
-                    <div style="font-size: 0.9rem; margin-bottom: 6px; color: var(--gray-600);">
-                        • Phản hồi: ${escapeHtml(item.feedback_check)}
-                    </div>
-                    <div style="font-size: 0.9rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid var(--gray-200); margin-top: 6px;">
-                        <strong style="color: var(--primary);"><i class="fa-solid fa-key"></i> Đáp án mẫu (Model Answer):</strong> ${escapeHtml(item.model_answer)}
-                    </div>
-                `;
-                resultsList.appendChild(card);
-            });
-
-            if (result.learning_profile_recommendation) {
-                const rec = result.learning_profile_recommendation;
-                recText.innerHTML = `
-                    <strong>Điểm yếu cần lưu ý:</strong> ${escapeHtml(rec.weakness_detected)}<br>
-                    <strong>Chủ đề gợi ý ôn tập:</strong> <span style="color: var(--primary); font-weight: 600;">${escapeHtml(rec.suggested_topic)}</span>
-                `;
-            }
-        }
-
-        function toggleLoading(show, text = "") {
-            const spinner = document.getElementById("loading-spinner");
-            const loadingText = document.getElementById("loading-text");
-            if (show) {
-                loadingText.innerText = text;
-                spinner.style.display = "block";
-            } else {
-                spinner.style.display = "none";
-            }
-        }
-
-        function updateCycleBar(step) {
-            for (let i = 1; i <= 4; i++) {
-                const stepEl = document.getElementById(`step-${i}`);
-                if (i <= step) {
-                    stepEl.classList.add("active");
-                } else {
-                    stepEl.classList.remove("active");
-                }
-            }
-        }
-
-        function escapeHtml(str) {
-            if (!str) return "";
-            return str
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-    </script>
+<canvas id="sky"></canvas>
+<div class="topline">GỬI TẶNG CÔ HẰNG KÍNH YÊU · NGƯỜI CHÈO ĐÒ TÂM HUYẾT ♡</div>
+<main class="scene">
+<section class="page" id="intro">
+  <div class="flower-wrap"><div class="flower"><div class="stem"></div><div class="leaf"></div><div class="leaf l2"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal"></div><div class="petal p4"></div></div></div>
+  <div class="eyebrow">♡ EM CÓ ĐIỀU MUỐN GỬI TỚI CÔ ♡</div>
+  <h1>Cô Hằng Kính Yêu</h1>
+  <p class="subtitle">Cảm ơn cô vì đã luôn tận tụy, kiên nhẫn dìu dắt và truyền cảm hứng cho chúng em. Có những lời tri ân em muốn gửi trao tới cô…</p>
+  <button class="button" id="open">💐 CÔ HẰNG ƠI, MỞ THIỆP NHÉ 💐</button>
+</section>
+<article class="card" id="card">
+  <h2>Gửi Cô Hằng kính yêu của chúng em 🌷</h2>
+  <p>Cô Hằng kính mến,</p>
+  <p>Nhân dịp đặc biệt này, em xin gửi tới cô lời chúc mừng chân thành và sâu sắc nhất từ đáy lòng.</p>
+  <p>Cảm ơn cô vì đã luôn dành trọn tâm huyết, sự kiên nhẫn và tình yêu thương cho từng bài giảng. Nhờ có sự dìu dắt tận tình của cô, chúng em không chỉ học hỏi thêm nhiều kiến thức quý báu mà còn trưởng thành hơn từng ngày.</p>
+  <p>Em chúc cô luôn giữ vững <b>ngọn lửa nhiệt huyết với nghề giáo</b>, luôn dồi dào sức khỏe, niềm vui và năng lượng tích cực. Mong rằng cô luôn hạnh phúc trên hành trình "trồng người" cao quý và gặt hái được thật nhiều thành công rực rỡ!</p>
+  <p>Kính chúc cô Hằng luôn xinh đẹp, an yên và tràn đầy cảm hứng mỗi ngày lên lớp. ❤️</p>
+  <p class="sign">Trân trọng và biết ơn cô rất nhiều! 💐</p>
+  <p class="center">♡ 🌷 ♡</p>
+  <div class="center" style="margin-top:16px"><button class="button" id="finalButton">CÔ NHẤN VÀO ĐÂY NỮA NHÉ 💖</button></div>
+</article>
+<section class="finale" id="finale">
+  <div class="heart">💐</div>
+  <div class="eyebrow">MÓN QUÀ BIẾT ƠN GỬI TẶNG CÔ HẰNG</div>
+  <h2>CẢM ƠN CÔ HẰNG ❤️</h2>
+  <p>Cảm ơn cô vì đã là người nâng bước và soi sáng con đường tri thức.<br>Chúc cô luôn mạnh khỏe, vui vẻ và luôn tự hào về các thế hệ học trò.<br>Kính chúc cô những điều tuyệt vời nhất! 🌷</p>
+  <button class="button" id="restart">ĐỌC LẠI LỜI TRI ÂN ↻</button>
+</section>
+</main>
+<div class="note">WITH ALL MY RESPECT · TÌNH CẢM DÀNH TẶNG CÔ HẰNG</div>
+<script>
+const canvas=document.getElementById('sky'),ctx=canvas.getContext('2d');let W,H,stars=[],hearts=[],particles=[];
+function resize(){W=innerWidth;H=innerHeight;canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);stars=Array.from({length:Math.min(180,Math.floor(W*H/6500))},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,a:Math.random()}))}
+function heartPath(x,y,s){ctx.beginPath();ctx.moveTo(x,y+s*.35);ctx.bezierCurveTo(x-s*1.2,y-s*.35,x-s*.55,y-s*.9,x,y-s*.35);ctx.bezierCurveTo(x+s*.55,y-s*.9,x+s*1.2,y-s*.35,x,y+s*.35)}
+function burst(x,y,n=70){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,v=Math.random()*3+.5;particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:1,size:Math.random()*3+.5})}}
+function draw(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{s.a+=(Math.random()-.5)*.04;s.a=Math.max(.15,Math.min(1,s.a));ctx.globalAlpha=s.a;ctx.fillStyle='#ffe3eb';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
+if(Math.random()<.22)hearts.push({x:Math.random()*W,y:H+20,size:Math.random()*8+4,vy:Math.random()*.8+.35,vx:(Math.random()-.5)*.4,a:.8});
+hearts=hearts.filter(h=>h.y>-25&&h.a>.05);hearts.forEach(h=>{h.y-=h.vy;h.x+=h.vx;h.a-=.0015;ctx.save();ctx.globalAlpha=h.a;heartPath(h.x,h.y,h.size);ctx.fillStyle='#ff7fa5';ctx.shadowColor='#ff7fa5';ctx.shadowBlur=12;ctx.fill();ctx.restore()});
+particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.012;ctx.globalAlpha=p.life;ctx.fillStyle='#ffc2d5';ctx.shadowBlur=10;ctx.shadowColor='#ff76a0';ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0,p.size*p.life),0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;ctx.shadowBlur=0;requestAnimationFrame(draw)}
+resize();addEventListener('resize',resize);draw();
+const intro=document.getElementById('intro'),card=document.getElementById('card'),finale=document.getElementById('finale');
+document.getElementById('open').onclick=()=>{intro.classList.add('hidden');card.style.display='block';burst(W/2,H/2,100)};
+document.getElementById('finalButton').onclick=()=>{card.style.display='none';finale.style.display='block';for(let i=0;i<7;i++)setTimeout(()=>burst(W*(.2+Math.random()*.6),H*(.25+Math.random()*.5),90),i*220)};
+document.getElementById('restart').onclick=()=>{finale.style.display='none';card.style.display='none';intro.classList.remove('hidden');burst(W/2,H/2,55)};
+setInterval(()=>{if(Math.random()<.6)burst(Math.random()*W,Math.random()*H,8)},1900);
+</script>
 </body>
-
 </html>
